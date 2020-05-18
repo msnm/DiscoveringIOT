@@ -1,0 +1,26 @@
+<mat-toolbar color="primary">
+  <mat-icon>device_hub</mat-icon>
+  <span>{{title}}</span>
+</mat-toolbar>
+
+
+<mat-card class="example-card">
+  <mat-card-header>
+    <div mat-card-avatar class="example-header-image"></div>
+    <mat-card-title>MyPlant</mat-card-title>
+    <mat-card-subtitle>Chamaedorea Elegans</mat-card-subtitle>
+  </mat-card-header>
+  <img mat-card-image src="https://img.crocdn.co.uk/images/products2/pl/20/00/03/44/pl2000034445_card3_lg.jpg" alt="Photo of Chamaedorea Elegans">
+  <mat-card-content>
+    <mat-icon>wb_sunny</mat-icon> <span> {{lightBuffer[0]}}</span>
+    <span>{{movement?"HOI":""}}</span>
+    <span> {{tempBuffer[0]}}</span>
+    <span> {{moistureBuffer[0]}}</span>
+
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button (click)="giveWater($event)">Give water</button>
+    <button mat-button>Talk To</button>
+  </mat-card-actions>
+</mat-card>
+

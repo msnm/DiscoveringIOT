@@ -5,6 +5,7 @@ Het doel van het project is om het welzijn van een plant te monitoren, alsook da
 ## Benodigdheden project
 
 - Arduino MKR1000
+- temperatuur sensor [TMP36 GZ](https://www.analog.com/media/en/technical-documentation/data-sheets/TMP35_36_37.pdf) (zou ook de TMP38 kunnen zijn, want moeilijk leesbaar, maar over de laatste vind ik geen datasheet)
 
 ## Setup Mosquitto server
 Voor het TCP/IP verkeer tussen de plant (Arduino= plants brain) en de eigenaar (web app) wordt het MQTT protocol gebruikt. MQTT gebruikt het publish/subscribe model om bi-derectionele communicatie tusen systemen toe te laten. Het voordeel van MQTT is dat het lightweight (binary messages) is, waardoor het geschikt is voor IOT waar geheugen optimalistie belangrijk is.
@@ -20,10 +21,7 @@ Via docker kan heel eenvoudig een [Mosquitto](https://hub.docker.com/_/eclipse-m
 Run vervolgens volgend docker commondo, maar zie dat de volumes zijn aangemaakt op de docker host. (pas zeker de paden aan!) De mosquitto.conf file dien je wel nog te [downloaden](https://github.com/eclipse/mosquitto/blob/master/mosquitto.conf) en te kopiëren naar de folder ``` ~/project/mosquitto/config ```.
 
 ```
-docker run -it -p 1883:1883 -p 9001:9001 --name mqtt \
-  -v mosquitto.conf:/Users/michael/Documents/KDG/IOT2/project/mosquitto/config/mosquitto.conf \
-  -v /Users/michael/Documents/KDG/IOT2/project/mosquitto/data \
-  -v /Users/michael/Documents/KDG/IOT2/project/mosquitto/log eclipse-mosquitto
+docker run -it -p 1883:1883 -p 9001:9001 -v /Users/michael/Documents/KDG/IOT2/DiscoveringIOT/plantmonitor/mosquitto/config:/mosquitto/config --name mqtt eclipse-mosquitto
 ```
 
 Een simpele helloworld kan getest worden door twee terminals te openen waar we een subscriber zal luisteren naar een topic. Mockito heeft zelf een client en publisher CMD tool aan boord. Nu gezien we de setup in een docker container draaien en we deze CMD's niet vanop de host kunnen raadplegen dienen we twee interactieve terminal te open naar de docker instance genaamd ```mqtt```.
@@ -73,3 +71,27 @@ mosquitto_pub -t PlantMonitor/sensor/light -m "1"
 
 
 ### Angular client code om te connecteren met de MQTT server
+
+
+## Sensoren
+
+### Temperatuur sensor
+
+Voor de temperatuur sensor maken we gebruik van temperatuur sensor [TMP36 GZ](https://www.analog.com/media/en/technical-documentation/data-sheets/TMP35_36_37.pdf). Deze sensor heeft geen temperatuur gevoelige weerstand aan boord, maar meet de temperatuur wijzigingen door gebruik te maken van diodes. Als bij een diode de temperatuur verandert dan wijzigt ook de spanning volgens een gekende verhouding.
+
+Het uitlezen van deze sensor (spanning meten we) geeft een waarde tussen 0 en 1023. Deze waarde moeten we dus gaan omzetten naar graden. In de Arduino opstelling wordt 3300 mV op de sensor gezet. In de datasheet lezen we dat de min temp -40°C to max 125 °C (165 range) is en dat wijzigingen van 10 mV overeenkomen met 1°C wijzigingen. Als -40°C overeenkomt met 0°C graden moeten we 400mv van de output voltage aftrekken.
+
+```
+ voltage = gemetenWaarde * (3300 / 1024) => voltage in mv
+ temp = (voltage (mV)- 400 (mV)) / 10 (mV/°C) => temp in °C
+```
+
+Zoals reeds gemeld is het moeilijk te lezen of het nu over de TMP36 of TMP38. Na vergelijking met andere temperatuur sensoren is benadert volgende vergelijking het best de temperatuur.
+
+```
+ voltage = gemetenWaarde * (3300 / 1024) => voltage in mv
+ temp = (voltage (mV)- 470 (mV)) / 10 (mV/°C) => temp in °C
+```
+
+### Light sensors
+Voor de lichtsensor maken we gebruik van een phototransistor en een weerstand van 1000 ohm. De keuze van de weerstand is bepaald door te trial en error. Deze weerstand zorgt ervoor dat donker quasi 0 geeft en +- 1000 als je er een felle lamp naast houdt.
