@@ -4,23 +4,54 @@
 </mat-toolbar>
 
 
-<mat-card class="example-card">
-  <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title>MyPlant</mat-card-title>
-    <mat-card-subtitle>Chamaedorea Elegans</mat-card-subtitle>
-  </mat-card-header>
-  <img mat-card-image src="https://img.crocdn.co.uk/images/products2/pl/20/00/03/44/pl2000034445_card3_lg.jpg" alt="Photo of Chamaedorea Elegans">
-  <mat-card-content>
-    <mat-icon>wb_sunny</mat-icon> <span> {{lightBuffer[0]}}</span>
-    <span>{{movement?"HOI":""}}</span>
-    <span> {{tempBuffer[0]}}</span>
-    <span> {{moistureBuffer[0]}}</span>
+<div class="main-flex-container">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title>Jos de Chamaedorea Elegans</mat-card-title>
+      <mat-card-subtitle>{{mood}}</mat-card-subtitle>
+    </mat-card-header>
+    <img *ngIf="waving && !needWater && !toHot"  mat-card-image src="https://i.gifer.com/Buo.gif" alt="Photo of Chamaedorea Elegans">
+    <img *ngIf="needWater"  mat-card-image src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQn8sr8qKAUfBb6xN_OSm5JlRcEgc0hYayVk04YD81bnVp0aQaT&usqp=CAU" alt="Photo of Chamaedorea Elegans">
+      <img *ngIf="!needWater &&!toHot && !waving" mat-card-image src="https://img.crocdn.co.uk/images/products2/pl/20/00/03/44/pl2000034445_card3_lg.jpg" alt="Photo of Chamaedorea Elegans">
+      <img *ngIf="toHot && !needWater && !waving" mat-card-image src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRko8FovC06Km0n6ZlsHl-vX_LqxNawf-8h-ag5vQx0vaf--Euo&usqp=CAU" alt="Photo of Chamaedorea Elegans">
+    <mat-card-content *ngIf="!showRealValues" class="sensor-container">
+      <div  class="sensor-item">
+        <span>  {{lightAvgPercentage}}% <i class="fas fa-sun"></i> </span>
+      </div>
+      <div  class="sensor-item">
+        <span> {{tempAvg}}°C <i class="fas fa-thermometer-three-quarters"></i></span>
+      </div>
+      <div  class="sensor-item">
+        <span> {{moistureAvgPercentage}}% <i class="fas fa-tint"></i></span>
+      </div>
+      <div  class="sensor-item" *ngIf="waterLedger[0]">
+        <span> {{waterLedger[0] | date}} <i class="fas fa-clock"></i></span>
+      </div>
+    </mat-card-content>
+    <mat-card-content *ngIf="showRealValues" class="sensor-container">
+      <div class="sensor-item">
+        <span> {{lightAvg}} <i class="fas fa-sun"></i> </span>
+      </div>
+      <div class="sensor-item">
+        <span> {{tempAvg}} <i class="fas fa-thermometer-three-quarters"></i></span>
+      </div>
+      <div class="sensor-item">
+        <span> {{moistureAvg}} <i class="fas fa-tint"></i></span>
+      </div>
+      <div  class="sensor-item" *ngIf="waterLedger[0]">
+        <span> {{waterLedger[0] | date}} <i class="fas fa-clock"></i></span>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button color="primary" (click)="giveWater($event)">Give water</button>
+      <button *ngIf="!lightOn" mat-button color="primary" (click)="turnOnTheLight($event)">Turn light on</button>
+      <button *ngIf="lightOn" mat-button color="primary" (click)="turnOffTheLight($event)">Turn light off</button>
+      <button *ngIf="showRealValues" mat-button color="primary" (click)="switchValueRepresentation($event)">Show percentage</button>
+      <button *ngIf="!showRealValues" mat-button color="primary" (click)="switchValueRepresentation($event)">Show real values</button>
 
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button (click)="giveWater($event)">Give water</button>
-    <button mat-button>Talk To</button>
-  </mat-card-actions>
-</mat-card>
+    </mat-card-actions>
+  </mat-card>
 
+
+</div>

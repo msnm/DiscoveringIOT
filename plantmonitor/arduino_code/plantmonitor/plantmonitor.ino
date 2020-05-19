@@ -56,7 +56,7 @@ bool errorHappened = false;
 /////// FUNCTIONS //////////
 
 float calculateTempInCelcius(int sensorValue) {
-  return ((sensorValue * (3300/1024)) - 470) / 10;
+  return ((sensorValue * (3300/1024)) - 500) / 10;
 }
 
 void printByte(byte character [])

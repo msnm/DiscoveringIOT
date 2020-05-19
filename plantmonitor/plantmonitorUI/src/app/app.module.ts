@@ -12,6 +12,8 @@ import {
   IMqttServiceOptions
 } from 'ngx-mqtt';
 import {MatCardModule} from '@angular/material/card';
+import {MatButtonModule} from '@angular/material/button';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
 export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
   hostname: 'localhost',
@@ -30,7 +32,9 @@ export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
-    MqttModule.forRoot(MQTT_SERVICE_OPTIONS)
+    MatButtonModule,
+    MatButtonToggleModule,
+    MqttModule.forRoot(MQTT_SERVICE_OPTIONS),
   ],
   providers: [],
   bootstrap: [AppComponent]
